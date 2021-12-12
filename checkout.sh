@@ -11,7 +11,7 @@ if [ $# -gt 0 ]; then
 fi
 
 WORK_DIR="$HOME"
-if [ $# -gt 1]; then
+if [ $# -gt 1 ]; then
     WORK_DIR="$2"
 fi
 
