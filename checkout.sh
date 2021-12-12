@@ -11,7 +11,7 @@ if [ $# -gt 0 ]; then
 fi
 
 GIT="$(which git)"
-WORK_DIR="$HOME/yolo"
+WORK_DIR="$HOME"
 TARGET_DIR="$WORK_DIR/.dotfiles"
 BACKUP_DIR="$WORK_DIR/.dotfiles-backup"
 UPSTREAM="git@github.com:pskry/dotfiles.git"
