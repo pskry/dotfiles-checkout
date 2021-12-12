@@ -9,11 +9,13 @@ BRANCH="master"
 if [ $# -gt 0 ]; then
     BRANCH="$1"
 fi
-echo "branch = $BRANCH"
-exit 1
+
+WORK_DIR="$HOME"
+if [ $# -gt 1]; then
+    WORK_DIR="$2"
+fi
 
 GIT="$(which git)"
-WORK_DIR="$HOME"
 TARGET_DIR="$WORK_DIR/.dotfiles"
 BACKUP_DIR="$WORK_DIR/.dotfiles-backup"
 UPSTREAM="git@github.com:pskry/dotfiles.git"
