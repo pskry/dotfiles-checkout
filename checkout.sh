@@ -9,6 +9,7 @@ BRANCH="master"
 if [ $# -gt 0 ]; then
     BRANCH="$1"
 fi
+echo "branch = $BRANCH"
 exit 1
 
 GIT="$(which git)"
