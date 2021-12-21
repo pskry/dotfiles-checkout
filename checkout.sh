@@ -31,16 +31,17 @@ log "branch:     $BRANCH"
 log "target-dir: $TARGET_DIR"
 log "backup-dir: $TARGET_DIR"
 
-git config --global alias.dot "!git --git-dir=$TARGET_DIR --work-tree=$WORK_DIR"
+function dot() {
+    git --git-dir=$TARGET_DIR --work-tree=$WORK_DIR $*
+}
 git clone -b "$BRANCH" --bare $UPSTREAM "$TARGET_DIR" || exit 1
 
 log "checkout..."
-git dot checkout 2>/dev/null
+dot checkout
 success=$?
 if [ $success -ne 0 ]; then
     log "backing up pre-existing dotfiles..."
-    # conflicts=$(git dot checkout 2>&1 | grep -E '^\s+' | sed 's/^\s//' | sed 's/(\s)/\\#_#/g')
-    conflicts=$(git dot checkout 2>&1 | grep -E '^\s+' | sed 's/^\s//')
+    conflicts=$(dot checkout 2>&1 | grep -E '^\s+' | sed 's/^\s//')
 
     # copy to backup or fail
     OLD_IFS="$IFS"
@@ -62,25 +63,27 @@ if [ $success -ne 0 ]; then
     for item in ${conflicts[@]}; do
         src="$WORK_DIR/$item"
         log "  remove $src"
-        rm "$item"
+        rm "$src"
     done
 fi
 
 # checkout again after failure and subsequent backup
 if [ $success -ne 0 ]; then
     log "checkout after backup..."
-    git dot checkout || exit 1
+    dot checkout || exit 1
 fi
 
 # hide all untracked files
 log "configuring git dot..."
-git dot config status.showUntrackedFiles no
+dot config status.showUntrackedFiles no
 
 # resolve submodules
 log "loading submodules..."
 pushd "$TARGET_DIR" >/dev/null || exit 2
-git dot submodule update --init || exit 1
+dot submodule update --init || exit 1
 popd >/dev/null || exit 2
+
+git config --global alias.dot "!git --git-dir=$TARGET_DIR --work-tree=$WORK_DIR"
 
 echo ""
 echo "====================================="
